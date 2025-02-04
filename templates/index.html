@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Notendashboard</h1>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<h2>Semester/Modul hinzufügen</h2>
+<form method="POST">
+    <label for="semester">Semester:</label><br>
+    <input type="text" id="semester" name="semester" required><br><br>
+
+    <label for="startdatum">Startdatum (YYYY-MM-DD):</label><br>
+    <input type="date" id="startdatum" name="startdatum"><br><br>
+
+    <label for="enddatum">Enddatum (YYYY-MM-DD):</label><br>
+    <input type="date" id="enddatum" name="enddatum"><br><br>
+
+    <label for="modulname">Modulname:</label><br>
+    <input type="text" id="modulname" name="modulname" required><br><br>
+
+    <label for="ects">ECTS:</label><br>
+    <input type="number" id="ects" name="ects"><br><br>
+
+    <label for="note">Note (optional):</label><br>
+    <input type="number" step="0.1" id="note" name="note"><br><br>
+
+    <input type="submit" value="Hinzufügen">
+</form>
+
+<div id="plotly-container">
+    {{ dashboard_html | safe }}
+</div>
+
+{% endblock %}

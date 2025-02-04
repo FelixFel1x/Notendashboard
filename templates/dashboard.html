@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notenübersicht</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a, .navbar button {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            background: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .navbar form {
+            display: inline;
+        }
+        .navbar button, .navbar a {
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+        .navbar > div:first-child {
+            margin-right: auto; 
+            font-size: 16px;
+        }
+        .navbar > div:nth-child(2) {
+            font-weight: bold;
+        }
+        .navbar > div:nth-child(3) {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-info {
+            font-size: 16px;
+        }
+        .major-form {
+            display: flex;
+            align-items: center;
+        }
+
+        .major-form input[type="text"] {
+            margin-right: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .major-form button {
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background: none;
+            font-size: 16px;
+        }
+        h2 {
+            font-size: 20px;
+        }
+        .gesamtdurchschnitt {
+            font-size: 24px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .semester-container {
+            margin-bottom: 40px;
+        }
+        .semester-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .semester-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .semester-header h3 {
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .semester-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .semester-title h3{
+            margin-right: 20px;
+            margin-bottom: 0px;
+        }
+        .semester-details{
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .semester-actions {
+            margin-top: 10px;
+        }
+        .semester-actions button {
+            margin-bottom: 5px;
+            margin-left: 0px;
+            margin-right: 5px;
+        }
+        .module-box {
+            border: 1px solid #eee;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .add-module-form {
+            margin-top: 10px;
+        }
+        .add-module-form input, .add-module-form button {
+            margin-bottom: 5px;
+        }
+        .flash-messages {
+            position: absolute;
+            top: 65px;
+            right: 10px;
+            z-index: 10;
+        }
+
+        .flash-messages ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .flash-messages li {
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            color: white;
+        }
+        .flash-messages .success {
+            background-color: #5cb85c;
+            border: 1px solid #4cae4c;
+        }
+
+        .flash-messages .danger {
+            background-color: #d9534f;
+            border: 1px solid #d43f3a;
+        }
+        .module-edit-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .module-edit-box > * {
+            margin-right: 10px;
+        }
+        .module-edit-box input {
+            margin-right: 5px;
+        }
+
+        .module-edit-box button {
+            margin-left: 5px;
+        }
+        .module-label{
+            margin-bottom: 10px;
+        }
+        .semester-actions .add-module-form {
+            margin-top: 20px;
+        }
+        .module-view-box {
+            display: grid;
+            grid-template-columns: 120px 1fr; 
+            grid-template-rows: auto; 
+            align-items: center;
+            margin-bottom: 5px;
+            width: 350px;
+        }
+
+        .module-view-item {
+            margin-right: 20px;
+        }
+        .module-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .module-view-label {
+            font-weight: bold;
+        }
+
+        .semester-header .semester-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            margin-left: 0px;
+            margin-bottom: 5px;
+        }
+        .semester-header p {
+            margin: 0;
+        }
+        .ziel-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .ziel-erreicht {
+            background-color: #dff0d8; /* Hellgrün */
+            border-color: #d6e9c6;
+        }
+        .ziel-gefaehrdet {
+            background-color: #fcf8e3; /* Hellgelb */
+            border-color: #faebcc;
+        }
+        .ziel-verfehlt {
+            background-color: #f2dede; /* Hellrot */
+            border-color: #ebccd1;
+        }
+        .ziel-info {
+            margin-bottom: 10px;
+        }
+        .ziel-fortschritt {
+            margin-bottom: 10px;
+        }
+        .fortschrittsbalken {
+            width: 100%;
+            height: 20px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .fortschrittsbalken-inner {
+            height: 100%;
+            background-color: #4CAF50; /* Grün */
+        }
+        .semester-actions .add-module-form {
+            margin-top: 20px;
+        }
+        .ziele-form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .ziele-form label {
+            margin-right: 5px;
+        }
+        .ziele-form input, .ziele-form button {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .semester-ziele {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 0px;
+            margin-left: 0px;
+        }
+        .semester-ziele-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .semester-ziele-form label {
+            margin-right: 5px;
+        }
+        .semester-ziele-form input,
+        .semester-ziele-form button {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .semester-ziele-anzeige {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .semester-ziele-anzeige p{
+            margin: 0;
+        }
+        .ziel-fortschritt-container {
+            display: flex;
+            align-items: center;
+            margin-left: 0px;
+        }
+
+        .ziel-fortschritt {
+            text-align: left;
+        }
+
+        .ziel-fortschritt p {
+            margin: 0 0 5px 0;
+        }
+        .fortschrittsbalken {
+            width: 200px;
+            height: 20px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .fortschrittsbalken-inner {
+            height: 100%;
+        }
+        .semester-details {
+            margin-right: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        {% if current_user.is_authenticated %}
+            <div class="user-info">
+                Hallo {{ current_user.username }}, willkommen in deiner Notenübersicht!
+            </div>
+        {% endif %}
+        <div style="font-weight: bold">
+            {% if major and major.name %}
+                {{ major.name }}
+            {% endif %}
+        </div>
+        <div>
+            {% if current_user.is_authenticated %}
+                {% if edit_mode %}
+                <form class="major-form" method="POST" action="{{ url_for('dashboard') }}">
+                    <input type="text" name="major" value="{{ major.name if major else '' }}" placeholder="Studiengang">
+                    <button type="submit" name="update_major">Speichern</button>
+                </form>
+                {% endif %}
+                <form action="{{ url_for('toggle_edit_mode') }}" method="GET">
+                    <button type="submit">
+                        {% if edit_mode %}
+                            Speichern & Ansichtsmodus
+                        {% else %}
+                            Bearbeitungsmodus
+                        {% endif %}
+                    </button>
+                </form>
+                <a href="{{ url_for('logout') }}">Abmelden</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div style="padding: 20px;">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class="ziele-container">
+            <h2>Deine Ziele</h2>
+            <div class="ziel-info">
+                <p>Zieldatum: {{ overall_target_date_str|date_format }}</p>
+                <p>Zielnote: {{ overall_target_grade }}</p>
+            </div>
+            <div class="ziel-fortschritt">
+                <p>{{ overall_ziel_nachricht }}</p>
+                <div class="fortschrittsbalken">
+                    <div class="fortschrittsbalken-inner" style="width: {{ overall_fortschritt_prozent }}%; background-color: #4CAF50;"></div>
+                </div>
+            </div>
+        </div>
+        {% if edit_mode %}
+        <div class="ziel-container">
+            <h2>Ziele bearbeiten</h2>
+            <form class="ziele-form" method="POST" action="{{ url_for('dashboard') }}">
+                <label for="overall_target_date">Zieldatum:</label>
+                <input type="date" id="overall_target_date" name="overall_target_date" value="{{ overall_target_date_str }}">
+                <label for="overall_target_grade">Zielnote:</label>
+                <input type="number" id="overall_target_grade" name="overall_target_grade" step="0.1" min="1.0" max="5.0" value="{{ overall_target_grade }}">
+                <button type="submit" name="update_overall_targets">Ziele aktualisieren</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if total_average is not none %}
+            <h2 class="gesamtdurchschnitt">Aktueller Gesamtdurchschnitt: {{ total_average|round(2) }}</h2>
+        {% else %}
+            <h2 class="gesamtdurchschnitt">Gesamtdurchschnitt: Keine Noten</h2>
+        {% endif %}
+
+        <h2>Semesterübersicht</h2>
+        
+        <div class="semester-container">
+            {% for semester_index, semester in semesters|enumerate %}
+                <div class="semester-box">
+                    <div class="semester-header">
+                        <div class="semester-title">
+                            <h3>{{ semester.name }}</h3>
+                        </div>
+                            <div class="semester-details">
+                                {% if semester.date %}
+                                    <p>Startdatum: {{ semester.date|date_format }}</p>
+                                {% endif %}
+                                {% if not edit_mode %}
+                                <p>Zieldatum: {{ semester.target_date|date_format }}</p>
+                                {% endif %}
+                                {% if semester.average is not none %}
+                                    <p>Semesterdurchschnitt: {{ semester.average|round(2) }}</p>
+                                {% else %}
+                                    <p>Keine Noten</p>
+                                {% endif %}
+                                {% if not edit_mode %}
+                                <p>Zielnote: {{ semester.target_grade }}
+                                {% endif %}
+                            </div>
+                           <div class="semester-ziele"> 
+                            <div class="semester-ziele-infos">
+                            </div>
+                        </div>
+                    </div>
+                    {% if edit_mode %}
+                        <form class="semester-ziele-form" method="POST" action="{{ url_for('dashboard') }}">
+                            <input type="hidden" name="semester_index" value="{{ semester_index }}">
+                            <label for="semester.target_date">Zieldatum:</label>
+                            <input type="date" name="target_date" value="{{ semester.target_date }}">
+                            <label for="semester.target_grade">Zielnote:</label>
+                            <input type="number" step="0.1" min="1.0" max="5.0" name="target_grade" value="{{ semester.target_grade }}">
+                            <button type="submit" name="update_semester_targets">Ziele aktualisieren</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('dashboard') }}">
+                            <input type="hidden" name="semester_index" value="{{ semester_index }}">
+                            <input type="text" name="semester_name" value="{{ semester.name }}">
+                            <input type="date" name="semester_date" value="{{ semester.date|strftime('%Y-%m-%d') if semester.date }}">
+                            <button type="submit" name="update_semester">Aktualisieren</button>
+                        </form>
+                        {% endif %}
+                        <ul>
+                            {% for module_index, module in semester.modules|enumerate %}
+                            <li class="module-box">
+                                {% if edit_mode %}
+                                    <div class="module-edit-box">
+                                        <form method="POST" action="{{ url_for('dashboard') }}">
+                                            <input type="hidden" name="semester_index" value="{{ semester_index }}">
+                                            <input type="hidden" name="module_index" value="{{ module_index }}">
+                                            <input type="text" name="module_name" value="{{ module.name }}">
+                                            <input type="number" name="ects" value="{{ module.ects }}">
+                                            <input type="number" step="0.1" name="grade" value="{{ module.grade }}">
+                                            <input type="date" name="date" value="{{ module.date|strftime('%Y-%m-%d') if module.date }}">
+                                            <button type="submit" name="update_module">Aktualisieren</button>
+                                            <button type="submit" name="remove_module">Löschen</button>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <div class="module-view-box">
+                                        <span class="module-view-item module-view-label">Modul:</span>
+                                        <span class="module-view-item">{{ module.name }}</span>
+                                        <span class="module-view-item module-view-label">ECTS:</span>
+                                        <span class="module-view-item">{{ module.ects }}</span>
+                                        {% if module.grade is not none %}
+                                            <span class="module-view-item module-view-label">Note:</span>
+                                            <span class="module-view-item">{{ module.grade }}</span>
+                                        {% endif %}
+                                        {% if module.date %}
+                                            <span class="module-view-item module-view-label">Datum:</span>
+                                            <span class="module-view-item">{{ module.date|date_format }}</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% if edit_mode %}
+                            <div class="semester-actions">
+                                <form method="POST" action="{{ url_for('dashboard') }}">
+                                    <input type="hidden" name="semester_index" value="{{ semester_index }}">
+                                    <button type="submit" name="remove_semester">Semester Löschen</button>
+                                </form>
+                                <form class="add-module-form" method="POST" action="{{ url_for('dashboard') }}">
+                                    <input type="hidden" name="semester_index" value="{{ semester_index }}">
+                                    <input type="text" name="module_name" placeholder="Modulname">
+                                    <input type="number" name="ects" placeholder="ECTS">
+                                    <input type="date" name="date" placeholder="Datum">
+                                    <button type="submit" name="add_module">Modul hinzufügen</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+    
+            {% if edit_mode %}
+                <form method="POST" action="{{ url_for('dashboard') }}">
+                    <input type="text" name="semester_name" placeholder="Semestername">
+                    <input type="date" name="semester_date" placeholder="Semester Datum">
+                    <button type="submit" name="add_semester">Semester hinzufügen</button>
+                </form>
+            {% endif %}
+        </div>
+    
+    </body>
+    </html>

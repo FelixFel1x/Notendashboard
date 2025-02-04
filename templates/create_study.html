@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Studiengang anlegen</h1>
+<form method="POST">
+    <label for="name">Name des Studiengangs:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label for="total_semesters">Anzahl Semester:</label><br>
+    <input type="number" name="total_semesters" required><br><br>
+
+    <label for="target_modules">Ziel Module:</label><br>
+    <input type="number" name="target_modules"><br><br>
+
+    <label for="target_time">Ziel Zeit:</label><br>
+    <input type="number" name="target_time"><br><br>
+
+    <input type="submit" value="Studiengang anlegen">
+</form>
+<a href="{{ url_for('dashboard') }}">Abbrechen</a>
+{% endblock %}
